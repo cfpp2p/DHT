@@ -2298,12 +2298,12 @@ dht_insert_node(const unsigned char *id, struct sockaddr *sa, int salen)
         return -1;
     }
 
-    n = new_node(id, (struct sockaddr*)sa, salen, 0);
+    n = new_node(id, sa, salen, 0);
     return !!n;
 }
 
 int
-dht_ping_node(struct sockaddr *sa, int salen)
+dht_ping_node(const struct sockaddr *sa, int salen)
 {
     unsigned char tid[4];
 
