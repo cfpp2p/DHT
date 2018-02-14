@@ -32,6 +32,7 @@ dht_callback(void *closure, int event,
 #define DHT_EVENT_SEARCH_DONE6 4
 
 extern FILE *dht_debug;
+extern int blocked_port;
 
 int dht_init(int s, int s6, const unsigned char *id, const unsigned char *v);
 int dht_insert_node(const unsigned char *id, struct sockaddr *sa, int salen);

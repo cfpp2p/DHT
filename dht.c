@@ -314,6 +314,8 @@ static int token_bucket_tokens;
 
 FILE *dht_debug = NULL;
 
+int blocked_port;
+
 #ifdef __GNUC__
     __attribute__ ((format (printf, 1, 2)))
 #endif
@@ -2104,7 +2106,7 @@ dht_periodic(const void *buf, size_t buflen,
             }
             if(implied_port != 0) {
                 if(port != 0) {
-                    if(dht_debug) debugf("Both port and implied_port.\n");
+                    if(dht_debug) debugf("Both port (%d) and implied_port.\n", port);
                     /* But continue, that's what the spec says. */
                 }
                 switch(from->sa_family) {
@@ -2128,6 +2130,15 @@ dht_periodic(const void *buf, size_t buflen,
                            203, "Announce_peer with forbidden port number");
                 break;
             }
+
+            if(port == blocked_port) {
+                if(dht_debug) debugf("Blocked port %d (environment setting TR_DHT_BLOCK_THIS_PORT).\n", port);
+                send_error(from, fromlen, tid, tid_len,
+                           203, "Announce_peer with forbidden port number");
+                port = 0;
+                break;
+            }
+
             storage_store(info_hash, from, port);
             /* Note that if storage_store failed, we lie to the requestor.
                This is to prevent them from backtracking, and hence
