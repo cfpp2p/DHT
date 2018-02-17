@@ -32,6 +32,7 @@ dht_callback(void *closure, int event,
 #define DHT_EVENT_SEARCH_DONE6 4
 
 extern FILE *dht_debug;
+extern FILE *port_filter;
 extern int blocked_port;
 
 int dht_init(int s, int s6, const unsigned char *id, const unsigned char *v);

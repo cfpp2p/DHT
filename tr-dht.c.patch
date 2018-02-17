@@ -1,5 +1,5 @@
---- J:/T1/DHT-port-tester-021218/tr-dht.c.org.c	Wed Jan 24 19:39:32 2018
-+++ J:/T1/DHT-port-tester-021218/tr-dht.c	Mon Feb 12 19:49:00 2018
+--- J:/T1/DHT-port-tester-021718/tr-dht.c.org.c	Wed Jan 24 19:39:32 2018
++++ J:/T1/DHT-port-tester-021718/tr-dht.c	Fri Feb 16 13:53:02 2018
 @@ -274,6 +274,7 @@
      int rc;
      bool have_id = false;
@@ -8,10 +8,13 @@
      uint8_t * nodes = NULL, * nodes6 = NULL;
      const uint8_t * raw;
      size_t len, len6;
-@@ -287,6 +288,10 @@
+@@ -287,6 +288,13 @@
      if( getenv( "TR_DHT_VERBOSE" ) != NULL )
          dht_debug = stderr;
  
++    if( getenv( "TR_DHT_PORT_FILTER" ) != NULL )
++        port_filter = stderr;
++
 +    block_this_port = getenv( "TR_DHT_BLOCK_THIS_PORT" );
 +    if( block_this_port != NULL ) blocked_port = strtol( block_this_port, NULL, 0 );
 +    else blocked_port = 0;
