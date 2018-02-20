@@ -315,7 +315,7 @@ static int token_bucket_tokens;
 FILE *dht_debug = NULL;
 FILE *port_filter = NULL;
 
-int blocked_port;
+unsigned short blocked_port;
 static int port_differs_count = 0;
 static int announce_count = 0;
 static int both_port_count = 0;
@@ -2130,17 +2130,17 @@ dht_periodic(const void *buf, size_t buflen,
             if(implied_port != 0) {
                 if(port != 0) {
                     if(dht_debug || port_filter) ++both_port_count;
-                    if(dht_debug) debugf("Both port (%d) and implied_port.\n", port);
+                    if(dht_debug) debugf("Both port (%d) and implied_port.\n", ntohs(port));
                     /* But continue, that's what the spec says. */
                 }
                 switch(from->sa_family) {
                 case AF_INET:
                     port = htons(((struct sockaddr_in*)from)->sin_port);
-                    if(dht_debug) debugf("Announce_peer: AF_INET implied_port %d.\n", port);
+                    if(dht_debug) debugf("Announce_peer: AF_INET implied_port %d.\n", ntohs(port));
                     break;
                 case AF_INET6:
                     port = htons(((struct sockaddr_in6*)from)->sin6_port);
-                    if(dht_debug) debugf("Announce_peer: AF_INET6 implied_port %d.\n", port);
+                    if(dht_debug) debugf("Announce_peer: AF_INET6 implied_port %d.\n", ntohs(port));
                     break;
                 default:
                     port = 0;
@@ -2153,13 +2153,13 @@ dht_periodic(const void *buf, size_t buflen,
                 ++port_differs_count;
                 if(dht_debug) {
                     debugf("port (%d) not equal to implied port (%d) differs count = %d.\n",
-                            port_temp, port, port_differs_count);
+                            ntohs(port_temp), ntohs(port), port_differs_count);
                     debugf("Total announce count = %d.\n", announce_count);
                     debugf("Both port count = %d.\n", both_port_count);
                 }
                 else if(port_filter) {
                     port_filterf("port (%d) not equal to implied port (%d) differs count = %d.\n",
-                        port_temp, port, port_differs_count);
+                            ntohs(port_temp), ntohs(port), port_differs_count);
                     port_filterf("Total announce count = %d.\n", announce_count);
                     port_filterf("Both port count = %d.\n", both_port_count);
                 }
@@ -2172,9 +2172,11 @@ dht_periodic(const void *buf, size_t buflen,
                 break;
             }
 
-            if(port == blocked_port) {
-                if(dht_debug) debugf("Blocked port %d (environment setting TR_DHT_BLOCK_THIS_PORT).\n", port);
-                else if(port_filter) port_filterf("Blocked port %d (environment setting TR_DHT_BLOCK_THIS_PORT).\n", port);
+            if(port == htons(blocked_port)) {
+                if(dht_debug) debugf("Blocked port %d (environment setting TR_DHT_BLOCK_THIS_PORT).\n",
+                                            ntohs(port));
+                else if(port_filter) port_filterf("Blocked port %d (environment setting TR_DHT_BLOCK_THIS_PORT).\n",
+                                            ntohs(port));
                 send_error(from, fromlen, tid, tid_len,
                            203, "Announce_peer with forbidden port number");
                 port = 0;
