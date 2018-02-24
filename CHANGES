@@ -1,8 +1,3 @@
-25 May 2016
-
-  * Synchronized with
-    https://github.com/cfpp2p/transmission/commits/svn/trunk/third-party/dht
-
 18 May 2015: dht-0.24
 
   * Fixed off-by-one error that dropped find_nodes responses with exactly
@@ -18,8 +13,13 @@
 
 3 May 2014: dht-0.22
 
-  * Don't load function buffers and call debugf()
-    unless debugging is actually specified.
+  * INCOMPATIBLE CHANGE: the callback now takes const arguments.
+  * Consult the local storage when performing a search, which should
+    make bootstrapping of tiny DHTs easier.  Note that we're still not
+    performing local stores, since that would require knowing our IP
+    address.
+  * Don't attempt to flush the debug stream if debugging is disabled.
+    This appears to work around a bug in Transmission.
 
 25 July 2011: dht-0.21
 

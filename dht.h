@@ -20,10 +20,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef void
 dht_callback(void *closure, int event,
-             unsigned char *info_hash,
-             void *data, size_t data_len);
+             const unsigned char *info_hash,
+             const void *data, size_t data_len);
 
 #define DHT_EVENT_NONE 0
 #define DHT_EVENT_VALUES 1
@@ -32,8 +36,6 @@ dht_callback(void *closure, int event,
 #define DHT_EVENT_SEARCH_DONE6 4
 
 extern FILE *dht_debug;
-extern FILE *port_filter;
-extern unsigned short blocked_port;
 
 int dht_init(int s, int s6, const unsigned char *id, const unsigned char *v);
 int dht_insert_node(const unsigned char *id, struct sockaddr *sa, int salen);
@@ -58,3 +60,7 @@ void dht_hash(void *hash_return, int hash_size,
               const void *v2, int len2,
               const void *v3, int len3);
 int dht_random_bytes(void *buf, size_t size);
+
+#ifdef __cplusplus
+}
+#endif
